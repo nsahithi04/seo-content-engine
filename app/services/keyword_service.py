@@ -4,22 +4,32 @@ import re
 from dotenv import load_dotenv
 from google import genai
 
-# load env
+
 load_dotenv()
 
-# create client
 client = genai.Client(api_key=os.getenv("GEMINI_API_KEY"))
 
 
 def generate_keywords(domain: str, audience: str):
+ 
     prompt = f"""
 You are an SEO expert.
 
-Given:
-- Company domain: {domain}
-- Target audience: {audience}
+Business Info:
+Company Website: {domain}
+Target Audience: {audience}
 
-Generate 10 high-intent Google search queries.
+Understand what this company likely does based on its name/domain.
+Then generate keywords relevant to its business and audience.
+
+Generate 10 HIGH-INTENT SEO search queries that:
+
+- reflect real Google searches
+- include specific use cases
+- include modifiers like "best", "for", "near me", "pricing", etc.
+- are relevant to BOTH the domain and audience
+
+Avoid generic queries.
 
 Return ONLY valid JSON in this format:
 
@@ -33,6 +43,7 @@ Return ONLY valid JSON in this format:
 No explanation.
 """
 
+  
     response = client.models.generate_content(
         model="gemini-2.5-flash",
         contents=prompt
@@ -42,7 +53,7 @@ No explanation.
 
     print("RAW LLM OUTPUT:", content)
 
-    # extract JSON safely
+
     match = re.search(r"\{.*\}", content, re.DOTALL)
 
     if match:

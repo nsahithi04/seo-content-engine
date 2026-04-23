@@ -28,4 +28,6 @@ def fetch_serp_results(keyword: str):
             "snippet": item.get("snippet")
         })
 
+    print("SERP OUTPUT:", results)
+
     return results
